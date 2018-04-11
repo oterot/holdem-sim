@@ -36,14 +36,13 @@ DEAL <- function() {
   card
 }
 
-player <- sample(x = 1:2,
-                 size = 1,
-                 replace = FALSE)
-switch <- c(2, 1)
-
 START_DEAL <- function() {
   SHUFFLE()
   players <- list(c(NA, NA), c(NA, NA))
+  player <<- sample(x = 1:2,
+                   size = 1,
+                   replace = FALSE)
+  switch <- c(2, 1)  
   for (i in 1:2) {
     player <- switch[player]
     players[[player]][i] <- DEAL()
@@ -59,62 +58,6 @@ START_DEAL <- function() {
   cat("Hero:", paste(players[[1]], sep = " "), "\n")
   cat("Villain:", paste(players[[2]], sep = " "), "\n")
   cat("Board:", paste(board, sep = " "), "\n")
-  
-}
-
-START_DEAL()
-
-count.suits <- function(hand) {
-  inhand <- (cards$display %in% hand)
-  suits <- cards$suit[inhand]
-  count <- table(suits)
-  count[count == max(count)]
-}
-
-prob.flush <- function(hand) {
-  count <- count.suits(hand)
-  unknown <- 52 - length(hand)
-  suits <- as.integer(count[1])
-  flush <- 13 - suits
-  nonflush <- unknown - flush
-  if (length(hand) == 5) {
-    if (suits == 5) {
-      prob.one <- 100
-      prob.two <- 100
-    } else if (suits == 4) {
-      prob.one <- flush / unknown
-      prob.two <-
-        1 - (nonflush / unknown) * (nonflush - 1) / (unknown - 1)
-    } else if (suits == 3) {
-      prob.one <- 0
-      prob.two <- flush / unknown * (flush - 1) / (unknown - 1)
-    } else {
-      prob.one <- 0
-      prob.two <- 0
-    }
-  }
-  else if (length(hand) == 6) {
-    prob.two <- NA
-    if (suits > 4) {
-      prob.one <- 100
-    } else if (suits == 4) {
-      prob.one <- flush / unknown
-    } else {
-      prob.one <- 0
-    }
-  }
-  else if (length(hand) == 7 && suits > 4) {
-    prob.one <- 100
-  }
-  else{
-    prob.one <- 0
-    prob.two <- NA
-  }
-  
-  cat("Probability of flush on next card:", round(prob.one, 2), "\n")
-  cat("Probability of flush on next two cards:",
-      round(prob.two, 2),
-      "\n")
 }
 
 next.card <- function() {
@@ -125,7 +68,4 @@ next.card <- function() {
   cat("Hero:", paste(hero, sep = " "), "\n")
   cat("Villain:", paste(villain, sep = " "), "\n")
   cat("Board:", paste(board, sep = " "), "\n")
-  prob.flush(hand)
 }
-
-prob.flush(hand)
