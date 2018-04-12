@@ -1,3 +1,16 @@
+prob.one <- function(outs, unknown) {
+  outs / unknown
+}
+
+prob.two <- function(outs, unknown) {
+  nonouts <- unknown - outs
+  1 - (nonouts / unknown) * (nonouts - 1) / (unknown - 1)
+}
+
+prob.both <- function(outs, unknown) {
+  outs / unknown * (outs - 1) / (unknown - 1)
+}
+
 suits.table <- function(hand) {
   suits <- gsub(pattern = "[2-9AKGJT]",
                 replacement = "",
@@ -7,31 +20,29 @@ suits.table <- function(hand) {
 }
 
 prob.flush <- function(hand) {
-  prob.one <- NA
-  prob.two <- NA
+  p1 <- NA
+  p2 <- NA
   flush <- 0
   size <- length(hand)
   unknown <- 52 - size
-  suits <- suits.table(hand)
-  suits.max <- max(suits)
-  suits.left <- 13 - suits.max
-  if (suits.max >= 5) {
+  suits <- max(suits.table(hand))
+  outs <- 13 - suits
+  if (suits >= 5) {
     flush <- 1
   } else {
     if (size == 5) {
-      if (suits.max == 4) {
-        prob.one <- suits.left / unknown
-        prob.two <-
-          1 - (unknown - suits.left) / unknown * (unknown - suits.left - 1) / (unknown - 1)
-      } else if (suits.max == 3) {
-        prob.two <- suits.left / unknown * (suits.left - 1) / (unknown - 1)
+      if (suits == 4) {
+        p1 <- prob.one(outs, unknown)
+        p2 <- prob.two(outs, unknown)
+      } else if (suits == 3) {
+        p2 <- prob.both(outs, unknown)
       }
     } else if (size == 6) {
-      if (suits.max == 4) {
-        prob.one <- suits.left / unknown
+      if (suits == 4) {
+        p1 <- prob.one(outs, unknown)
       }
     }
   }
-  result <- as.numeric(c(prob.one, prob.two, flush))
+  result <- as.numeric(c(p1, p2, flush))
   result
 }
