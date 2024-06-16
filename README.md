@@ -1,5 +1,5 @@
 # holdem-sim
-heads-up limit holdem simulation
+classes and functions for simulating holdem
 
 Limit holdem simulator.
 
